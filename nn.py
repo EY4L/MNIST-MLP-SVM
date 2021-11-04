@@ -33,7 +33,7 @@ transformations = torchvision.transforms.Compose(
 )
 
 training_data = torchvision.datasets.MNIST(
-    root=Path("nn_mnist", "data"),
+    root=Path("data"),
     train=True,
     download=True,
     transform=transformations,
@@ -44,7 +44,7 @@ print(
 )
 
 test_data = torchvision.datasets.MNIST(
-    root=Path("nn_mnist", "data"),
+    root=Path("data"),
     train=False,
     download=True,
     transform=transforms.ToTensor(),
@@ -165,7 +165,7 @@ gs.fit(X_train, y_train)
 joblib.dump(
     gs,
     Path(
-        "nn_mnist",
+
         "results",
         "NN_gs.pkl",
     ),
@@ -174,7 +174,6 @@ joblib.dump(
 # Save computed weights
 gs.best_estimator_.save_params(
     f_params=Path(
-        "nn_mnist",
         "results",
         "NN_weights.pkl",
     )
@@ -189,7 +188,7 @@ grid_table = pd.concat(
     axis=1,
 )
 
-grid_table.to_csv(Path("nn_mnist", "results", "NN_grid_table.csv"))
+grid_table.to_csv(Path("results", "NN_grid_table.csv"))
 
 print(grid_table)
 print(gs.best_params_)
@@ -199,7 +198,6 @@ print(gs.best_params_)
 
 gs = joblib.load(
     Path(
-        "nn_mnist",
         "results",
         "NN_gs.pkl",
     )
@@ -209,7 +207,6 @@ gs = joblib.load(
 Net = gs.best_estimator_.initialize()
 Net.load_params(
     Path(
-        "nn_mnist",
         "results",
         "NN_weights.pkl",
     )
@@ -231,7 +228,7 @@ conf_matrix = confusion_matrix(
     y_pred,
 )
 
-# %%
+# %% MLP Confusion Matrix
 plt.matshow(
     conf_matrix,
     cmap=plt.cm.Blues,
@@ -244,7 +241,7 @@ print("MLP accuracy: " + str(accuracy))
 # %% SVM training
 SVM = SVC()
 
-params = [{"kernel": ["rbf", "linear"], "C": [3, 6, 9]}]
+params = [{"kernel": ["rbf", "linear"], "C": [0.1, 0.001, 0.0001, 0.000001]}]
 
 
 # Grid Search for SVM
@@ -271,7 +268,6 @@ SVM_gs.fit(X_train_flat_test, y_train_test)
 joblib.dump(
     SVM_gs,
     Path(
-        "nn_mnist",
         "results",
         "SVM_gs.pkl",
     ),
@@ -294,7 +290,6 @@ print(SVM_gs.best_params_)
 # Load GS
 SVM_gs = joblib.load(
     Path(
-        "nn_mnist",
         "results",
         "SVM_gs.pkl",
     ),
